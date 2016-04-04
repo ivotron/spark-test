@@ -2,7 +2,9 @@
 set -x
 set -e
 
+sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
 service ssh start
+
 ssh-keygen -f $HOME/.ssh/id_rsa -t rsa -N ''
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys

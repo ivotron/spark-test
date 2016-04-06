@@ -8,6 +8,8 @@ cores=$1
 shift
 memgb=$1
 shift
+drivermemgb=$1
+shift
 nverts=$*
 
 if [ -z "$nverts" ]; then
@@ -23,7 +25,7 @@ echo "NVERTS: $nverts"
 
 for nvert in $nverts; do
 
-  (docker run --rm --cidfile=/tmp/cid -e NVERTS=$nvert -e INSTANCES=$inst -e MEMGB=$memgb -e CORES=$cores $docker &)
+  (docker run --rm --cidfile=/tmp/cid -e NVERTS=$nvert -e INSTANCES=$inst -e MEMGB=$memgb -e CORES=$cores DRIVERMEMGB=$drivermemgb $docker &)
 
   sleep 10
   cid=`cat /tmp/cid`

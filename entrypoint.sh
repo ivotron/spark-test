@@ -3,6 +3,7 @@ set -x
 set -e
 
 nverts=${NVERTS:-100}
+drivermembg=${INSTANCES:-4}
 instances=${INSTANCES:-3}
 memgb=${MEMGB:-2}
 cores=${CORES:-1}
@@ -23,6 +24,7 @@ echo SPARK_EXECUTOR_INSTANCES=$instances >> conf/spark-defaults.conf
 
 #echo SPARK_WORKER_MEMORY=${memgb}g >> conf/spark-env.sh
 echo "spark.executor.memory ${memgb}g" >> conf/spark-defaults.conf
+echo "spark.driver.memory ${drivermemgb}g" >> conf/spark-defaults.conf
 echo "spark.executor.extraJavaOptions -d64 -server -XX:GCTimeRatio=24 -XX:InitiatingHeapOccupancyPercent=80 -XX:+UseG1GC" >> conf/spark-defaults.conf
 
 sbin/start-all.sh

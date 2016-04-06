@@ -2,28 +2,41 @@
 
 docker=$1
 shift
-inst=$1
+spark_env_sh_file=$1
 shift
-cores=$1
-shift
-memgb=$1
+spark_defaults_conf_file=$1
 shift
 nverts=$*
 
 if [ -z "$nverts" ]; then
-  echo "USAGE: ./test.sh <docker img> <instances> <cores> <mem>g nvert[ nvert[ ...]]"
+  echo "USAGE: ./test.sh <docker img> <spark_env_sh_file> <spark_defaults_conf_file> nvert[ nvert[ ...]]"
   exit 1
 fi
 
 echo "DOCKER IMG: $docker"
-echo "INSTANCES: $inst"
-echo "CORES/INST: $cores"
-echo "GB/INST: ${memgb}g"
+echo "spark_env_sh_file: $spark_env_sh_file"
+echo "spark_defaults_conf_file: $spark_defaults_conf_file"
 echo "NVERTS: $nverts"
+
+if [ -f "$spark_env_sh_file" ]; then
+  echo "spark_env_sh_file exists: $spark_env_sh_file"
+else
+  echo "spark_env_sh_file does NOT exist: $spark_env_sh_file"
+  echo "exiting now"
+  exit 1
+fi
+
+if [ -f "$spark_defaults_conf_file" ]; then
+  echo "spark_defaults_conf_file exists: $sspark_defaults_conf_file"
+else
+  echo "spark_defaults_conf_file does NOT exist: $spark_defaults_conf_file"
+  echo "exiting now"
+  exit 1
+fi
 
 for nvert in $nverts; do
 
-  (docker run --rm --cidfile=/tmp/cid -e NVERTS=$nvert -e INSTANCES=$inst -e MEMGB=$memgb -e CORES=$cores $docker &)
+  (docker run --rm --cidfile=/tmp/cid -e NVERTS=$nvert -v $spark_env_sh_file:/spark-1.6.1-bin-hadoop2.6/conf/spark-env.sh -v $spark_defaults_conf_file:/spark-1.6.1-bin-hadoop2.6/conf/spark-defaults.conf $docker &)
 
   sleep 10
   cid=`cat /tmp/cid`
